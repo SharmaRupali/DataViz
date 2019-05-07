@@ -20,7 +20,6 @@ lab_measure[1:13, 1:5]
 lab_measure[1:13, substr(names(lab_measure), 2,3)]
 
 
-lab_measure[1, 1:5] with 1 1 master
 lab_measure[1, c(1,2,6:8)]
 
 xx <- cbind(lab_measure[1:13, 1:5], master_color_card[1, c(1:2, 9:11)])
@@ -85,6 +84,14 @@ for (n_row in 1:dim(XX)[1]) {
   }
 }
 
+
+
+## distance between color patches
+## each color patch on each card of each paper is compared to the respective color patch on the master color card
+## matrix aa (546,64): rows corresponding to the rows from XX (lab_measure) (1 row = 1 color card with 64 patches), 
+## and cols corresponding to the deltaE values for each color patch: 3 cols (XX)(L, a, b) = 1 col (aa) deltaE
+
+### Correct one --
 aa <- matrix(nrow = dim(XX)[1], ncol = 64)
 bb <- matrix(nrow = 8, ncol = 8)
 
@@ -97,6 +104,9 @@ for (n_row in 1:dim(XX)[1]) {
     }
   }
 }
+### -- Correct one
+
+
 
 
 aa <- matrix(nrow = dim(XX)[1], ncol = 64)
@@ -162,3 +172,8 @@ deltaE2000(c(XX[2,paste("L", 8, 8, sep="")], XX[2,paste("a", 8, 8, sep="")], XX[
 
 deltaE2000(c(XX[1,paste("L", 6, 5, sep="")], XX[1,paste("a", 6, 5, sep="")], XX[1,paste("b", 6, 5, sep="")]), 
            c(YY[YY[, "Crow"] == 6 & YY[, "Ccol"] == 5, 9], YY[YY[, "Crow"] == 6 & YY[, "Ccol"] == 5, 10], YY[YY[, "Crow"] == 6 & YY[, "Ccol"] == 5, 11]))
+
+
+# macter color card: color patches
+require(colorspace)
+LAB(51.641, 0.169, 3.054)
