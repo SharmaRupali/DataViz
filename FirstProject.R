@@ -1,0 +1,164 @@
+setwd("C:/Users/rupal/Google Drive/Beuth Uni/Semester II/Data Visualization/First Project")
+
+require(data.table)
+lab_measure <- fread("LabMeasurements-Color-Card.csv", dec = ",")
+master_color_card <- fread("MasterColorCard.csv", dec = ",")
+
+# calculate the distances between the colors (Lab), print master and other cards on sheets
+
+Lab1 <- c(51.641, 0.169, 3.054)
+
+
+which(lab_measure$Row == 1 & lab_measure$Column == 1)
+which(master_color_card$Crow == 1 & master_color_card$Ccol == 1)
+
+which(substr(names(lab_measure), 2,3) == 11)
+
+lab_measure[1:13, which(substr(names(lab_measure), 2,3) == 11)]
+
+lab_measure[1:13, 1:5]
+lab_measure[1:13, substr(names(lab_measure), 2,3)]
+
+
+lab_measure[1, 1:5] with 1 1 master
+lab_measure[1, c(1,2,6:8)]
+
+xx <- cbind(lab_measure[1:13, 1:5], master_color_card[1, c(1:2, 9:11)])
+
+XX <- data.matrix(lab_measure)
+XX[1:13, 1:5]
+
+YY <- data.matrix(master_color_card)
+YY[1, c(1:2, 9:11)]
+
+deltaE2000(c(XX[1,3], XX[1,4], XX[1,5]), c(YY[1,9], YY[1,10], YY[1,11])) # 1  # 1 1  # 1 # 1 1
+deltaE2000(c(XX[2,3], XX[2,4], XX[2,5]), c(YY[1,9], YY[1,10], YY[1,11])) # 2  # 1 1  # 1 # 1 1
+
+deltaE2000(c(XX[1,6], XX[1,7], XX[1,8]), c(YY[2,9], YY[2,10], YY[2,11])) # 1 # 1 2  # 2 # 1 2
+
+
+
+deltaE2000(c(XX[14,3], XX[14,4], XX[14,5]), c(YY[9,9], YY[9,10], YY[9,11])) # 14 # 2 1  # 9 # 2 1
+deltaE2000(c(XX[15,3], XX[15,4], XX[15,5]), c(YY[9,9], YY[9,10], YY[9,11])) # 15 # 2 1  # 9 # 2 1
+
+
+
+
+for (i in 1:13){
+  del[i] <- deltaE2000(c(XX[i,3], XX[i,4], XX[i,5]), c(YY[1,9], YY[1,10], YY[1,11]))
+}
+
+aa = matrix(nrow = dim(XX)[1], ncol = 0)
+for (pos_row in 1:7) {
+  for (pos_col in 1:6) {
+    for (i in 1:8) {
+      for (j in 1:8) {
+        
+      }
+    }
+  }
+}
+
+
+XX[ , c(paste("L", 1, 1, sep=""), paste("a", 1, 1, sep=""), paste("b", 1, 1, sep=""))]
+YY[YY[, "Crow"] == 1 & YY[, "Ccol"] == 3, c(2:3, 9:11)]
+c(YY[YY[, "Crow"] == 1 & YY[, "Ccol"] == 3, 9], YY[YY[, "Crow"] == 1 & YY[, "Ccol"] == 3, 10], YY[YY[, "Crow"] == 1 & YY[, "Ccol"] == 3, 11])
+
+aa <- matrix(nrow = dim(XX)[1], ncol = 64)
+
+for (i in 1:8) {
+  for (j in 1:8) {
+    aa <- deltaE2000(c(XX[paste("L", i, j, sep="")], XX[paste("a", i, j, sep="")], XX[paste("b", i, j, sep="")]), 
+                     c(YY[YY[, "Crow"] == i & YY[, "Ccol"] == j, 9], YY[YY[, "Crow"] == i & YY[, "Ccol"] == j, 10], YY[YY[, "Crow"] == i & YY[, "Ccol"] == j, 11]))
+  }
+}
+
+
+aa <- matrix(nrow = dim(XX)[1], ncol = 64)
+
+for (n_row in 1:dim(XX)[1]) {
+  for (i in 1:8) {
+    for (j in 1:8) {
+      aa[n_row] <- deltaE2000(c(XX[n_row ,paste("L", i, j, sep="")], XX[n_row ,paste("a", i, j, sep="")], XX[n_row ,paste("b", i, j, sep="")]),
+                       c(YY[YY[, "Crow"] == i & YY[, "Ccol"] == j, 9], YY[YY[, "Crow"] == i & YY[, "Ccol"] == j, 10], YY[YY[, "Crow"] == i & YY[, "Ccol"] == j, 11]))
+    }
+  }
+}
+
+aa <- matrix(nrow = dim(XX)[1], ncol = 64)
+bb <- matrix(nrow = 8, ncol = 8)
+
+for (n_row in 1:dim(XX)[1]) {
+  for (i in 1:8) {
+    for (j in 1:8) {
+      bb[i,j] <- deltaE2000(c(XX[n_row ,paste("L", i, j, sep="")], XX[n_row ,paste("a", i, j, sep="")], XX[n_row ,paste("b", i, j, sep="")]),
+                            c(YY[YY[, "Crow"] == i & YY[, "Ccol"] == j, 9], YY[YY[, "Crow"] == i & YY[, "Ccol"] == j, 10], YY[YY[, "Crow"] == i & YY[, "Ccol"] == j, 11]))
+      aa[n_row, ] <- c(t(bb))
+    }
+  }
+}
+
+
+aa <- matrix(nrow = dim(XX)[1], ncol = 64)
+bb <- matrix(nrow = dim(XX)[1], ncol = 64)
+
+for (n_row in 1:dim(XX)[1]) {
+  for (n_col in 1:64) {
+    for (i in 1:8) {
+      for (j in 1:8) {
+        aa[n_row] <- deltaE2000(c(XX[n_row ,paste("L", i, j, sep="")], XX[n_row ,paste("a", i, j, sep="")], XX[n_row ,paste("b", i, j, sep="")]),
+                                c(YY[YY[, "Crow"] == i & YY[, "Ccol"] == j, 9], YY[YY[, "Crow"] == i & YY[, "Ccol"] == j, 10], YY[YY[, "Crow"] == i & YY[, "Ccol"] == j, 11]))
+      }
+    }
+  }
+}
+
+for (n_row in 1:dim(XX)[1]) {
+  for (n_col in 1:63) {
+    for (i in 1:8) {
+      for (j in 1:8) {
+        bb[n_row] <- deltaE2000(c(XX[n_row ,paste("L", i, j, sep="")], XX[n_row ,paste("a", i, j, sep="")], XX[n_row ,paste("b", i, j, sep="")]),
+                                c(YY[YY[, "Crow"] == i & YY[, "Ccol"] == j, 9], YY[YY[, "Crow"] == i & YY[, "Ccol"] == j, 10], YY[YY[, "Crow"] == i & YY[, "Ccol"] == j, 11]))
+        n_col = n_col + 1
+      }
+    }
+  }
+}
+
+
+cc <- matrix(nrow = 8, ncol = 8)
+for (i in 1:8) {
+  for (j in 1:8) {
+    cc[i,j] <- deltaE2000(c(XX[1 ,paste("L", i, j, sep="")], XX[1 ,paste("a", i, j, sep="")], XX[1 ,paste("b", i, j, sep="")]),
+                            c(YY[YY[, "Crow"] == i & YY[, "Ccol"] == j, 9], YY[YY[, "Crow"] == i & YY[, "Ccol"] == j, 10], YY[YY[, "Crow"] == i & YY[, "Ccol"] == j, 11]))
+  }
+}
+
+
+
+
+
+bb[1,1] <- deltaE2000(c(XX[1,paste("L", 1, 1, sep="")], XX[1,paste("a", 1, 1, sep="")], XX[1,paste("b", 1, 1, sep="")]), 
+                      c(YY[YY[, "Crow"] == 1 & YY[, "Ccol"] == 1, 9], YY[YY[, "Crow"] == 1 & YY[, "Ccol"] == 1, 10], YY[YY[, "Crow"] == 1 & YY[, "Ccol"] == 1, 11]))
+
+
+bb[1,2] <- deltaE2000(c(XX[1,paste("L", 1, 2, sep="")], XX[1,paste("a", 1, 2, sep="")], XX[1,paste("b", 1, 2, sep="")]), 
+                      c(YY[YY[, "Crow"] == 1 & YY[, "Ccol"] == 2, 9], YY[YY[, "Crow"] == 1 & YY[, "Ccol"] == 2, 10], YY[YY[, "Crow"] == 1 & YY[, "Ccol"] == 2, 11]))
+
+
+bb[1,3] <- deltaE2000(c(XX[1,paste("L", 1, 3, sep="")], XX[1,paste("a", 1, 3, sep="")], XX[1,paste("b", 1, 3, sep="")]), 
+                      c(YY[YY[, "Crow"] == 1 & YY[, "Ccol"] == 3, 9], YY[YY[, "Crow"] == 1 & YY[, "Ccol"] == 3, 10], YY[YY[, "Crow"] == 1 & YY[, "Ccol"] == 3, 11]))
+
+bb[1,9] <- deltaE2000(c(XX[1,paste("L", 2, 1, sep="")], XX[1,paste("a", 2, 1, sep="")], XX[1,paste("b", 2, 1, sep="")]), 
+                      c(YY[YY[, "Crow"] == 2 & YY[, "Ccol"] == 1, 9], YY[YY[, "Crow"] == 2 & YY[, "Ccol"] == 1, 10], YY[YY[, "Crow"] == 2 & YY[, "Ccol"] == 1, 11]))
+
+
+deltaE2000(c(XX[1,paste("L", 8, 8, sep="")], XX[1,paste("a", 8, 8, sep="")], XX[1,paste("b", 8, 8, sep="")]), 
+           c(YY[YY[, "Crow"] == 8 & YY[, "Ccol"] == 8, 9], YY[YY[, "Crow"] == 8 & YY[, "Ccol"] == 8, 10], YY[YY[, "Crow"] == 8 & YY[, "Ccol"] == 8, 11]))
+
+deltaE2000(c(XX[2,paste("L", 8, 8, sep="")], XX[2,paste("a", 8, 8, sep="")], XX[2,paste("b", 8, 8, sep="")]), 
+           c(YY[YY[, "Crow"] == 8 & YY[, "Ccol"] == 8, 9], YY[YY[, "Crow"] == 8 & YY[, "Ccol"] == 8, 10], YY[YY[, "Crow"] == 8 & YY[, "Ccol"] == 8, 11]))
+
+
+deltaE2000(c(XX[1,paste("L", 6, 5, sep="")], XX[1,paste("a", 6, 5, sep="")], XX[1,paste("b", 6, 5, sep="")]), 
+           c(YY[YY[, "Crow"] == 6 & YY[, "Ccol"] == 5, 9], YY[YY[, "Crow"] == 6 & YY[, "Ccol"] == 5, 10], YY[YY[, "Crow"] == 6 & YY[, "Ccol"] == 5, 11]))
