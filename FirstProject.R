@@ -10,6 +10,24 @@ master_color_card <- fread("MasterColorCard.csv", dec = ",")
 XX <- data.matrix(lab_measure)
 YY <- data.matrix(master_color_card)
 
+# column names
+cols <- c("Sheet", "Rows", "Columns", unique(substr(colnames(XX), 2, 3))[c(-1,-2)])
+
+mid_blocks = c() # store the indices of middle elements
+for (i in c("44", "45", "54", "55")) {
+  mid_blocks[i] = which(cols == i)
+}
+
+corners = c() # store the indices of corner elements
+for (i in c("11", "18", "81", "88")) {
+  corners[i] = which(cols[-mid_blocks] == i)
+}
+
+borders = c() # store the indices of border elements
+for (i in unique(c(paste(1, 1:8, sep=""), paste(8, 1:8, sep=""), paste(1:8, 1, sep=""), paste(1:8, 8, sep="")))) {
+  borders[i] = which(cols[-mid_blocks] == i)
+}
+
 
 ## distance (deltaE) & similarity (cosine similarity) between color patches
 
@@ -32,8 +50,18 @@ for (n_row in 1:dim(XX)[1]) {
 }
 
 dist_mat <- cbind(rep(1:13, 42), XX[, c(1,2)], aa)
-cols <- unique(substr(colnames(XX), 2, 3))[c(-1,-2)]
-colnames(dist_mat) <- c("Sheet", "Rows", "Columns", cols)
+colnames(dist_mat) <- cols
+
+## without the middle part: cols: 44, 45, 54, 55
+## keeping the same name (for without the middle because we're excluding the middle part at all times)
+dist_mat <- dist_mat[, -mid_blocks]
+
+## without the corners
+dist_mat_no_corners <- dist_mat[, -corners]
+
+## without the borders
+dist_mat_no_borders <- dist_mat[, -borders]
+
 ### -- Correct one
 
 
@@ -52,11 +80,21 @@ for (n_row in 1:dim(XX)[1]) {
 }
 
 simi_mat <- cbind(dist_mat[, 1:3], ll)
-colnames(simi_mat) <- colnames(dist_mat)
+colnames(simi_mat) <- cols
+
+## without the middle part: cols: 44, 45, 54, 55
+## keeping the same name (for without the middle because we're excluding the middle part at all times)
+simi_mat <- simi_mat[, -mid_blocks]
+
+## without the corners
+simi_mat_no_corners <- simi_mat[, -corners]
+
+## without the borders
+simi_mat_no_borders <- simi_mat[, -borders]
 ### --- correct similarity
 
 
-# ignore middle blocks at all times 44, 45, 54, 55
+
 # all colors
 # without corners 11, 18, 81, 88
 # without borders 1st row: 11,12,13-18 1st col: 11,21,31-81 8th row: 81,82,83-88 8th col: 18,28,38-88
@@ -272,6 +310,7 @@ colnames(similarity_mat) <- colnames(distance_mat)
 ### ---
 
 hist(ll)
+
 
 
 
