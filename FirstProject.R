@@ -62,6 +62,17 @@ dist_mat_no_corners <- dist_mat[, -corners]
 ## without the borders
 dist_mat_no_borders <- dist_mat[, -borders]
 
+## means
+dist_means <- matrix(nrow = dim(dist_mat)[1], ncol = 6)
+colnames(dist_means) <- c("Sheet", "Rows", "Columns", "Means_dist_all_colors", "Means_dist_no_corners", "Means_dist_no_borders")
+dist_means[, 1:3] <- dist_mat[, 1:3]
+
+for (i in 1:dim(dist_mat)[1]) {
+  dist_means[i, 4] <- mean(dist_mat[i, 4:dim(dist_mat)[2]])
+  dist_means[i, 5] <- mean(dist_mat_no_corners[i, 4:dim(dist_mat_no_corners)[2]])
+  dist_means[i, 6] <- mean(dist_mat_no_borders[i, 4:dim(dist_mat_no_borders)[2]])
+}
+
 ### -- Correct one
 
 
@@ -91,6 +102,17 @@ simi_mat_no_corners <- simi_mat[, -corners]
 
 ## without the borders
 simi_mat_no_borders <- simi_mat[, -borders]
+
+## means
+simi_means <- matrix(nrow = dim(simi_mat)[1], ncol = 6)
+colnames(simi_means) <- c("Sheet", "Rows", "Columns", "Means_simi_all_colors", "Means_simi_no_corners", "Means_simi_no_borders")
+simi_means[, 1:3] <- simi_mat[, 1:3]
+
+for (i in 1:dim(simi_mat)[1]) {
+  simi_means[i, 4] <- mean(simi_mat[i, 4:dim(simi_mat)[2]])
+  simi_means[i, 5] <- mean(simi_mat_no_corners[i, 4:dim(simi_mat_no_corners)[2]])
+  simi_means[i, 6] <- mean(simi_mat_no_borders[i, 4:dim(simi_mat_no_borders)[2]])
+}
 ### --- correct similarity
 
 
@@ -101,6 +123,8 @@ simi_mat_no_borders <- simi_mat[, -borders]
 
 # intra sheet inter color
 # plot every sheet pattern
+
+
 
 
 
@@ -311,8 +335,3 @@ colnames(similarity_mat) <- colnames(distance_mat)
 
 hist(ll)
 
-
-
-
-## means
-simi_mat[1, 4:dim(simi_mat)[2]] # for all rows
