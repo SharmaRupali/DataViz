@@ -116,9 +116,26 @@ barplot(tab, col = color)
 abline(v = mean(dist_frame_means_all), col = "red")
 dev.off()
 
+# set some new bins
+
+buc_cut <- list()
+
+for (i in 1:13) {
+  buc_cut[[i]] <- table(cut(dist_frame_means_all[,i], seq(min(dist_frame_means_all[]), max(dist_frame_means_all), 0.05)))
+}
+buc_cut
+mel_cut <- melt(buc_cut);mel_cut
+tab_cut <- table(mel_cut$L1, mel_cut$value); tab_cut
+
+# stacked barplot for the new bins
+# beside: a logical value. 
+# If FALSE, the columns of height are portrayed as stacked bars, 
+# and if TRUE the columns are portrayed as juxtaposed bars.
+barplot(height = mel_cut$value, names.arg = mel_cut$Var1, col = color, beside = F)
+### does not work as exprected ###
+
+# 1st: try the cut
 cut(dist_frame_means_all, seq(min(dist_frame_means_all), max(dist_frame_means_all), 0.05))
-
-
 
 
 
