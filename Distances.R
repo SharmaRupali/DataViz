@@ -27,13 +27,12 @@ for (i in unique(c(paste(1, 1:8, sep=""), paste(8, 1:8, sep=""), paste(1:8, 1, s
 }
 
 
-## distance (deltaE) & similarity (cosine similarity) between color patches
+## distance (deltaE) between color patches
 
 ## each color patch on each card of each paper is compared to the respective color patch on the master color card
 ## matrix aa (546,64): rows corresponding to the rows from XX (lab_measure) (1 row = 1 color card with 64 patches), 
 ## and cols corresponding to the deltaE values for each color patch: 3 cols (XX)(L, a, b) = 1 col (aa) deltaE
 
-### Correct one --
 aa <- matrix(nrow = dim(XX)[1], ncol = 64)
 bb <- matrix(nrow = 8, ncol = 8)
 
@@ -66,12 +65,10 @@ colnames(dist_means) <- c("Sheet", "Rows", "Columns", "Means_dist_all_colors", "
 dist_means[, 1:3] <- dist_mat[, 1:3]
 
 for (i in 1:dim(dist_mat)[1]) {
-  dist_means[i, 4] <- mean(dist_mat[i, 4:dim(dist_mat)[2]])
+  dist_means[i, 4] <- round(mean(dist_mat[i, 4:dim(dist_mat)[2]]), 2)
   dist_means[i, 5] <- mean(dist_mat_no_corners[i, 4:dim(dist_mat_no_corners)[2]])
   dist_means[i, 6] <- mean(dist_mat_no_borders[i, 4:dim(dist_mat_no_borders)[2]])
 }
-
-### -- Correct one
 
 
 ## boxplot distances all colors
@@ -83,9 +80,109 @@ for (i in 1:13) {
 }
 dist_frame_means_all <- t(dist_frame_means_all)
 row.names(dist_frame_means_all) <- row_names
-write.csv(dist_frame_means_all, "Distance_frame_means_all.csv")
-boxplot(dist_frame_means_all, horizontal = TRUE, main = "Mean distances wrt cards by sheets", xlab = "Mean distances wrt cards", ylab = "Sheet")
+#write.csv(dist_frame_means_all, "Distance_frame_means_all.csv")
+
+boxplot(dist_frame_means_all, col = color, horizontal = TRUE, main = "Mean distances wrt cards (all colors) by sheets", xlab = "Mean distances wrt cards", ylab = "Sheet")
 abline(v = mean(dist_frame_means_all))
+
+
+
+
+hist(dist_frame_means_all)
+
+require(reshape2)
+require(ggplot2)
+
+#buc <- list("1" = dist_frame_means_all[, 1], "2" = dist_frame_means_all[, 2])
+
+buc <- list()
+for (i in 1:13) {
+  buc[[i]] <- dist_frame_means_all[, i]
+}
+
+#ggplot(melt(buc), aes(value, fill = L1)) + geom_histogram(position = "stack") + scale_fill_manual(breaks = melt(buc)$L1, values = rainbow(13))
+
+#ggplot(dist_frame_means_all, aes(x = ))
+
+mel <- melt(buc)
+tab <- table(mel$L1, mel$value)
+barplot(tab, col = color)
+
+color <- rainbow(13)
+
+cut(dist_frame_means_all, seq(min(dist_frame_means_all), max(dist_frame_means_all), 0.05))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## boxplot distances no corners
+dist_frame_means_no_corners = data.frame()
+for (i in 1:13) {
+  dist_frame_means_no_corners <- rbind(dist_frame_means_no_corners, as.list(dist_means[which(dist_means[, "Sheet"] == i), 5]))
+}
+dist_frame_means_no_corners <- t(dist_frame_means_no_corners)
+row.names(dist_frame_means_no_corners) <- row_names
+write.csv(dist_frame_means_no_corners, "Distance_frame_means_no_corners.csv")
+
+boxplot(dist_frame_means_no_corners, horizontal = TRUE, main = "Mean distances wrt cards (no corners) by sheets", xlab = "Mean distances wrt cards", ylab = "Sheet")
+abline(v = mean(dist_frame_means_no_corners))
+
+
+## boxplot distances no borders
+dist_frame_means_no_borders = data.frame()
+for (i in 1:13) {
+  dist_frame_means_no_borders <- rbind(dist_frame_means_no_borders, as.list(dist_means[which(dist_means[, "Sheet"] == i), 6]))
+}
+dist_frame_means_no_borders <- t(dist_frame_means_no_borders)
+row.names(dist_frame_means_no_borders) <- row_names
+write.csv(dist_frame_means_no_borders, "Distance_frame_means_no_borders.csv")
+
+boxplot(dist_frame_means_no_borders, horizontal = TRUE, main = "Mean distances wrt cards (no borders) by sheets", xlab = "Mean distances wrt cards", ylab = "Sheet")
+abline(v = mean(dist_frame_means_no_borders))
+
+
+
+
 
 
 
