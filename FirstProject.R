@@ -1,5 +1,3 @@
-setwd("C:/Users/rupal/Google Drive/Beuth Uni/Semester II/Data Visualization/First Project")
-
 require(data.table)
 require(colorscience)
 require(tcR)
@@ -116,6 +114,32 @@ for (i in 1:dim(simi_mat)[1]) {
 ### --- correct similarity
 
 
+# 
+boxplot(dist_means[which(dist_means[, "Sheet"] == 1), 4], horizontal = TRUE)
+
+
+frame_means_all = data.frame()
+for (i in 1:13) {
+  frame_means_all <- rbind(frame_means_all, as.list(dist_means[which(dist_means[, "Sheet"] == i), 4]))
+}
+frame_means_all <- t(frame_means_all)
+boxplot(frame_means_all, horizontal = TRUE, main = "Mean distances wrt cards by sheets") # 
+abline(v = mean(frame_means_all))
+## check if 1(boxplot) = 1(sheet)
+
+
+a <- dist_means[which(dist_means[, "Sheet"] == 1), 4]
+b <- dist_means[which(dist_means[, "Sheet"] == 2), 4]
+c <- dist_means[which(dist_means[, "Sheet"] == 3), 4]
+d <- dist_means[which(dist_means[, "Sheet"] == 4), 4]
+
+d_frame <- data.frame(a,b,c,d)
+d_frame$e <- rep(1,42)
+
+a <- simi_means[which(simi_means[, "Sheet"] == 1), 4]
+b <- simi_means[which(simi_means[, "Sheet"] == 2), 4]
+c <- simi_means[which(simi_means[, "Sheet"] == 3), 4]
+d <- simi_means[which(simi_means[, "Sheet"] == 4), 4]
 
 # all colors
 # without corners 11, 18, 81, 88
@@ -125,7 +149,10 @@ for (i in 1:dim(simi_mat)[1]) {
 # plot every sheet pattern
 
 
-
+d <- data.frame()
+for (i in 1:20) {
+  d <- rbind(d, rep(1, i))
+}
 
 
 
