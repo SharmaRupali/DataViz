@@ -72,3 +72,23 @@ for (i in 1:dim(dist_mat)[1]) {
 }
 
 ### -- Correct one
+
+
+## boxplot distances all colors
+row_names <- paste(dist_means[which(dist_means[, "Sheet"] == 1), "Rows"], dist_means[which(dist_means[, "Sheet"] == 1), "Columns"], sep = "")
+
+dist_frame_means_all = data.frame()
+for (i in 1:13) {
+  dist_frame_means_all <- rbind(dist_frame_means_all, as.list(dist_means[which(dist_means[, "Sheet"] == i), 4]))
+}
+dist_frame_means_all <- t(dist_frame_means_all)
+row.names(dist_frame_means_all) <- row_names
+write.csv(dist_frame_means_all, "Distance_frame_means_all.csv")
+boxplot(dist_frame_means_all, horizontal = TRUE, main = "Mean distances wrt cards by sheets", xlab = "Mean distances wrt cards", ylab = "Sheet")
+abline(v = mean(dist_frame_means_all))
+
+
+
+
+
+
