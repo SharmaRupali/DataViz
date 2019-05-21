@@ -82,13 +82,17 @@ dist_frame_means_all <- t(dist_frame_means_all)
 row.names(dist_frame_means_all) <- row_names
 #write.csv(dist_frame_means_all, "Distance_frame_means_all.csv")
 
+color <- rainbow(13)
+
+png(filename="Images/BoxMeanDistCardsBySheets.png")
 boxplot(dist_frame_means_all, col = color, horizontal = TRUE, main = "Mean distances wrt cards (all colors) by sheets", xlab = "Mean distances wrt cards", ylab = "Sheet")
-abline(v = mean(dist_frame_means_all))
+abline(v = mean(dist_frame_means_all), col = "red")
+dev.off()
 
-
-
-
+png(filename="Images/HistMeanDistCardsBySheets.png")
 hist(dist_frame_means_all)
+abline(v = mean(dist_frame_means_all), col = "red")
+dev.off()
 
 require(reshape2)
 require(ggplot2)
@@ -106,9 +110,11 @@ for (i in 1:13) {
 
 mel <- melt(buc)
 tab <- table(mel$L1, mel$value)
-barplot(tab, col = color)
 
-color <- rainbow(13)
+png(filename="Images/StackBarMeanDistCardsBySheets.png")
+barplot(tab, col = color)
+abline(v = mean(dist_frame_means_all), col = "red")
+dev.off()
 
 cut(dist_frame_means_all, seq(min(dist_frame_means_all), max(dist_frame_means_all), 0.05))
 
