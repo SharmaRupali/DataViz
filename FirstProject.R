@@ -2,8 +2,8 @@ require(data.table)
 require(colorscience)
 require(tcR)
 
-lab_measure <- fread("LabMeasurements-Color-Card.csv", dec = ",")
-master_color_card <- fread("MasterColorCard.csv", dec = ",")
+lab_measure <- fread("Data/LabMeasurements-Color-Card.csv", dec = ",")
+master_color_card <- fread("Data/MasterColorCard.csv", dec = ",")
 
 XX <- data.matrix(lab_measure)
 YY <- data.matrix(master_color_card)
