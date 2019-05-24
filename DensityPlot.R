@@ -1,5 +1,9 @@
 ## run Distances.R first for the dataframe and colors
+hist(dist_frame_means_all)#,  freq = FALSE)
+rug(jitter(dist_frame_means_all))
+lines(density(dist_frame_means_all), lwd = 2)
 
+?hist
 # density plot
 # d <- list()
 # calculate min/max for x/y for a proper plot
