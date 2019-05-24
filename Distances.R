@@ -60,6 +60,7 @@ dist_mat_no_corners <- dist_mat[, -corners]
 dist_mat_no_borders <- dist_mat[, -borders]
 
 ## means
+# mean distances for each card on all the 13 sheets: 13(sheets) * 42(cards/sheet) rows 
 dist_means <- matrix(nrow = dim(dist_mat)[1], ncol = 6)
 colnames(dist_means) <- c("Sheet", "Rows", "Columns", "Means_dist_all_colors", "Means_dist_no_corners", "Means_dist_no_borders")
 dist_means[, 1:3] <- dist_mat[, 1:3]
@@ -74,6 +75,7 @@ for (i in 1:dim(dist_mat)[1]) {
 ## boxplot distances all colors
 row_names <- paste(dist_means[which(dist_means[, "Sheet"] == 1), "Rows"], dist_means[which(dist_means[, "Sheet"] == 1), "Columns"], sep = "")
 
+# cols: sheets, rows: mean distances 
 dist_frame_means_all = data.frame()
 for (i in 1:13) {
   dist_frame_means_all <- rbind(dist_frame_means_all, as.list(dist_means[which(dist_means[, "Sheet"] == i), 4]))
@@ -90,7 +92,7 @@ abline(v = mean(dist_frame_means_all), col = "red")
 dev.off()
 
 png(filename="Images/HistMeanDistCardsBySheets.png")
-hist(dist_frame_means_all)
+hist(dist_frame_means_all[])
 abline(v = mean(dist_frame_means_all), col = "red")
 dev.off()
 
