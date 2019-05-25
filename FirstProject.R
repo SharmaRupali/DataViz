@@ -114,7 +114,7 @@ for (i in 1:dim(simi_mat)[1]) {
 ### --- correct similarity
 
 
-# 
+# boxplot tests
 boxplot(dist_means[which(dist_means[, "Sheet"] == 1), 4], horizontal = TRUE)
 
 
@@ -149,13 +149,10 @@ d <- simi_means[which(simi_means[, "Sheet"] == 4), 4]
 # plot every sheet pattern
 
 
-d <- data.frame()
-for (i in 1:20) {
-  d <- rbind(d, rep(1, i))
-}
 
 
 
+## boxplot colors? add color to the boxplot
 
 
 ########## tests distance
