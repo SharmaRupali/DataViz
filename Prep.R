@@ -26,8 +26,6 @@ for (i in unique(c(paste(1, 1:8, sep=""), paste(8, 1:8, sep=""), paste(1:8, 1, s
   borders[i] = which(cols[-mid_blocks] == i)
 }
 
-## row_nanes for cards i.e: 11 -> card on 1st row, 1st col; 32: card on 3rd row, 2nd col
-row_names <- paste(dist_means[which(dist_means[, "Sheet"] == 1), "Rows"], dist_means[which(dist_means[, "Sheet"] == 1), "Columns"], sep = "")
 
 ## colors for the sheets
 color <- rainbow(13)
@@ -79,8 +77,11 @@ for (i in 1:dim(dist_mat)[1]) {
   dist_means[i, 6] <- mean(dist_mat_no_borders[i, 4:dim(dist_mat_no_borders)[2]])
 }
 
+## row_nanes for cards i.e: 11 -> card on 1st row, 1st col; 32: card on 3rd row, 2nd col
+row_names <- paste(dist_means[which(dist_means[, "Sheet"] == 1), "Rows"], dist_means[which(dist_means[, "Sheet"] == 1), "Columns"], sep = "")
 
-# dataframe with sheets on cols and mean of distances for color cards on rows
+
+# dataframe with sheets on cols and MEAN of distances for color cards on rows
 ## 42x13   42 cards (each sheet), 13 sheets
 dist_frame_means_no_borders = data.frame()
 for (i in 1:13) {
