@@ -64,7 +64,59 @@ abline(v = mean(simi_frame_means_no_borders), col = "red")
 dev.off()
 
 
+### HYPOTHESIS C - Comparing a single color over all sheets
+### plot all color distances ~ similarities
+col_sim_temp <- c()
+col_sim <- list()
 
+col_dist_temp <- c()
+col_dist <- list()
+
+for (i in 1:13) {
+  for (j in 4:dim(simi_mat_no_borders)[2]) {
+    col_sim_temp[j-3] <- mean(simi_mat_no_borders[simi_mat_no_borders[, "Sheet"] == i, j])
+  }
+  col_sim[[i]] <- col_sim_temp
+}
+
+for (i in 1:13) {
+  for (j in 4:dim(dist_mat_no_borders)[2]) {
+    col_dist_temp[j-3] <- mean(dist_mat_no_borders[dist_mat_no_borders[, "Sheet"] == i, j])
+  }
+  col_dist[[i]] <- col_dist_temp
+}
+
+
+# calculate min/max for x/y for a proper plot
+min_x = list()
+max_x = list()
+min_y = list()
+max_y = list()
+
+for(i in 1:13) {
+  min_x[i] <- min(col_dist[[i]])
+  max_x[i] <- max(col_dist[[i]])
+  min_y[i] <- min(col_sim[[i]])
+  max_y[i] <- max(col_sim[[i]])
+}
+
+plot(1, 1, type = "b", xlab = "", ylab = "", log = "x", pch = 19,
+     xlim = c(min(unlist(min_x)),max(unlist(max_x))),
+     ylim = c(min(unlist(min_y)), max(unlist(max_y))), main = "???")
+
+col_col <- rainbow(32)
+
+
+for (i in 1:13) {
+  for(j in 1:32) {
+    lines(col_dist[[i]][j], col_sim[[i]][j], col = col_col[j], type = "b", cex=1.5)
+  }
+}
+
+
+legend("topright", legend = 1:13, col=color, pch=1) # optional legend
+dev.copy(png,filename="Images/ScatterDistColors.png");
+dev.off()
 
 
 
@@ -178,6 +230,9 @@ ylim = c(0,3)
 xlim = c(0,2)
 
 
+
+
+### TESTS
 ########33 color 22
 dddd_sim <- c()
 dddd_sim[1] <- mean(simi_mat[simi_mat[, "Sheet"] == 1, "22"])
@@ -204,61 +259,4 @@ points(ee_dist, ee, col = "blue", pch = 16)
 
 
 
-col_sim_temp <- c()
-col_sim <- list()
 
-col_dist_temp <- c()
-col_dist <- list()
-
-for (i in 1:13) {
-  for (j in 4:dim(simi_mat_no_borders)[2]) {
-    col_sim_temp[j-3] <- mean(simi_mat_no_borders[simi_mat_no_borders[, "Sheet"] == i, j])
-  }
-  col_sim[[i]] <- col_sim_temp
-}
-
-for (i in 1:13) {
-  for (j in 4:dim(dist_mat_no_borders)[2]) {
-    col_dist_temp[j-3] <- mean(dist_mat_no_borders[dist_mat_no_borders[, "Sheet"] == i, j])
-  }
-  col_dist[[i]] <- col_dist_temp
-}
-
-
-
-plot(col_dist[[1]], col_sim[[1]], col = "red", pch = 16)
-plot(1,1, type = "n", )
-
-
-
-
-# calculate min/max for x/y for a proper plot
-min_x = list()
-max_x = list()
-min_y = list()
-max_y = list()
-
-for(i in 1:13) {
-  min_x[i] <- min(col_dist[[i]])
-  max_x[i] <- max(col_dist[[i]])
-  min_y[i] <- min(col_sim[[i]])
-  max_y[i] <- max(col_sim[[i]])
-}
-
-plot(1, 1, type = "b", xlab = "", ylab = "", log = "x", pch = 19,
-     xlim = c(min(unlist(min_x)),max(unlist(max_x))),
-     ylim = c(min(unlist(min_y)), max(unlist(max_y))), main = "???")
-
-col_col <- rainbow(32)
-
-
-for (i in 1:13) {
-  for(j in 1:32) {
-    lines(col_dist[[i]][j], col_sim[[i]][j], col = col_col[j], type = "b", cex=1.5)
-  }
-}
-
-
-legend("topright", legend = 1:13, col=color, pch=1) # optional legend
-dev.copy(png,filename="Images/DensityMeanDistCardsBySheets.png");
-dev.off()
