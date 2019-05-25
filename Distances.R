@@ -1,209 +1,158 @@
-require(data.table)
-require(colorscience)
-require(tcR)
-
-lab_measure <- fread("Data/LabMeasurements-Color-Card.csv", dec = ",")
-master_color_card <- fread("Data/MasterColorCard.csv", dec = ",")
-
-XX <- data.matrix(lab_measure)
-YY <- data.matrix(master_color_card)
-
-# column names
-cols <- c("Sheet", "Rows", "Columns", unique(substr(colnames(XX), 2, 3))[c(-1,-2)])
-
-mid_blocks = c() # store the indices of middle elements
-for (i in c("44", "45", "54", "55")) {
-  mid_blocks[i] = which(cols == i)
-}
-
-corners = c() # store the indices of corner elements
-for (i in c("11", "18", "81", "88")) {
-  corners[i] = which(cols[-mid_blocks] == i)
-}
-
-borders = c() # store the indices of border elements
-for (i in unique(c(paste(1, 1:8, sep=""), paste(8, 1:8, sep=""), paste(1:8, 1, sep=""), paste(1:8, 8, sep="")))) {
-  borders[i] = which(cols[-mid_blocks] == i)
-}
-
-
-## distance (deltaE) between color patches
-
-## each color patch on each card of each paper is compared to the respective color patch on the master color card
-## matrix aa (546,64): rows corresponding to the rows from XX (lab_measure) (1 row = 1 color card with 64 patches), 
-## and cols corresponding to the deltaE values for each color patch: 3 cols (XX)(L, a, b) = 1 col (aa) deltaE
-
-aa <- matrix(nrow = dim(XX)[1], ncol = 64)
-bb <- matrix(nrow = 8, ncol = 8)
-
-for (n_row in 1:dim(XX)[1]) {
-  for (i in 1:8) {
-    for (j in 1:8) {
-      bb[i,j] <- deltaE2000(c(XX[n_row ,paste("L", i, j, sep="")], XX[n_row ,paste("a", i, j, sep="")], XX[n_row ,paste("b", i, j, sep="")]),
-                            c(YY[YY[, "Crow"] == i & YY[, "Ccol"] == j, 9], YY[YY[, "Crow"] == i & YY[, "Ccol"] == j, 10], YY[YY[, "Crow"] == i & YY[, "Ccol"] == j, 11]))
-      aa[n_row, ] <- c(t(bb))
-    }
-  }
-}
-
-dist_mat <- cbind(rep(1:13, 42), XX[, c(1,2)], aa)
-colnames(dist_mat) <- cols
-
-## without the middle part: cols: 44, 45, 54, 55
-## keeping the same name (for without the middle because we're excluding the middle part at all times)
-dist_mat <- dist_mat[, -mid_blocks]
-
-## without the corners
-dist_mat_no_corners <- dist_mat[, -corners]
-
-## without the borders
-dist_mat_no_borders <- dist_mat[, -borders]
-
-## means
-# mean distances for each card on all the 13 sheets: 13(sheets) * 42(cards/sheet) rows 
-dist_means <- matrix(nrow = dim(dist_mat)[1], ncol = 6)
-colnames(dist_means) <- c("Sheet", "Rows", "Columns", "Means_dist_all_colors", "Means_dist_no_corners", "Means_dist_no_borders")
-dist_means[, 1:3] <- dist_mat[, 1:3]
-
-for (i in 1:dim(dist_mat)[1]) {
-  dist_means[i, 4] <- round(mean(dist_mat[i, 4:dim(dist_mat)[2]]), 2)
-  dist_means[i, 5] <- mean(dist_mat_no_corners[i, 4:dim(dist_mat_no_corners)[2]])
-  dist_means[i, 6] <- mean(dist_mat_no_borders[i, 4:dim(dist_mat_no_borders)[2]])
-}
-
-
-## boxplot distances all colors
-row_names <- paste(dist_means[which(dist_means[, "Sheet"] == 1), "Rows"], dist_means[which(dist_means[, "Sheet"] == 1), "Columns"], sep = "")
-
-# cols: sheets, rows: mean distances 
-dist_frame_means_all = data.frame()
-for (i in 1:13) {
-  dist_frame_means_all <- rbind(dist_frame_means_all, as.list(dist_means[which(dist_means[, "Sheet"] == i), 4]))
-}
-dist_frame_means_all <- t(dist_frame_means_all)
-row.names(dist_frame_means_all) <- row_names
-#write.csv(dist_frame_means_all, "Distance_frame_means_all.csv")
-
-color <- rainbow(13)
-
-png(filename="Images/BoxMeanDistCardsBySheets.png")
-boxplot(dist_frame_means_all, col = color, horizontal = TRUE, main = "Mean distances wrt cards (all colors) by sheets", xlab = "Mean distances wrt cards", ylab = "Sheet")
-abline(v = mean(dist_frame_means_all), col = "red")
-dev.off()
-
-png(filename="Images/HistMeanDistCardsBySheets.png")
-hist(dist_frame_means_all[])
-abline(v = mean(dist_frame_means_all), col = "red")
-dev.off()
-
-require(reshape2)
-require(ggplot2)
-
-#buc <- list("1" = dist_frame_means_all[, 1], "2" = dist_frame_means_all[, 2])
-
-buc <- list()
-for (i in 1:13) {
-  buc[[i]] <- dist_frame_means_all[, i]
-}
-
-#ggplot(melt(buc), aes(value, fill = L1)) + geom_histogram(position = "stack") + scale_fill_manual(breaks = melt(buc)$L1, values = rainbow(13))
-
-#ggplot(dist_frame_means_all, aes(x = ))
-
-mel <- melt(buc)
-tab <- table(mel$L1, mel$value)
-
-png(filename="Images/StackBarMeanDistCardsBySheets.png")
-barplot(tab, col = color)
-abline(v = mean(dist_frame_means_all), col = "red")
-dev.off()
-
-# set some new bins
-
-buc_cut <- list()
-
-for (i in 1:13) {
-  buc_cut[[i]] <- table(cut(dist_frame_means_all[,i], seq(min(dist_frame_means_all[]), max(dist_frame_means_all), 0.05)))
-}
-buc_cut
-mel_cut <- melt(buc_cut);mel_cut
-tab_cut <- table(mel_cut$L1, mel_cut$value); tab_cut
-
-# stacked barplot for the new bins
-# beside: a logical value. 
-# If FALSE, the columns of height are portrayed as stacked bars, 
-# and if TRUE the columns are portrayed as juxtaposed bars.
-barplot(height = mel_cut$value, names.arg = mel_cut$Var1, col = color, beside = F)
-### does not work as exprected ###
-
-# 1st: try the cut
-cut(dist_frame_means_all, seq(min(dist_frame_means_all), max(dist_frame_means_all), 0.05))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## boxplot distances no corners
-dist_frame_means_no_corners = data.frame()
-for (i in 1:13) {
-  dist_frame_means_no_corners <- rbind(dist_frame_means_no_corners, as.list(dist_means[which(dist_means[, "Sheet"] == i), 5]))
-}
-dist_frame_means_no_corners <- t(dist_frame_means_no_corners)
-row.names(dist_frame_means_no_corners) <- row_names
-write.csv(dist_frame_means_no_corners, "Distance_frame_means_no_corners.csv")
-
-boxplot(dist_frame_means_no_corners, horizontal = TRUE, main = "Mean distances wrt cards (no corners) by sheets", xlab = "Mean distances wrt cards", ylab = "Sheet")
-abline(v = mean(dist_frame_means_no_corners))
-
+## BOXPLOT
 
 ## boxplot distances no borders
-dist_frame_means_no_borders = data.frame()
-for (i in 1:13) {
-  dist_frame_means_no_borders <- rbind(dist_frame_means_no_borders, as.list(dist_means[which(dist_means[, "Sheet"] == i), 6]))
-}
-dist_frame_means_no_borders <- t(dist_frame_means_no_borders)
-row.names(dist_frame_means_no_borders) <- row_names
-write.csv(dist_frame_means_no_borders, "Distance_frame_means_no_borders.csv")
+png(filename="Images/Dist/BoxMeanDistCardsBySheets.png")
+boxplot(dist_frame_means_no_borders, col = color, horizontal = TRUE, main = "Mean distances wrt cards by sheets", xlab = "Mean distances", ylab = "Sheet")
+abline(v = mean(dist_frame_means_no_borders), col = "red")
+dev.off()
 
-boxplot(dist_frame_means_no_borders, horizontal = TRUE, main = "Mean distances wrt cards (no borders) by sheets", xlab = "Mean distances wrt cards", ylab = "Sheet")
-abline(v = mean(dist_frame_means_no_borders))
+
+## HISTOGRAM
+
+png(filename="Images/Dist/HistMeanDistCardsBySheets.png")
+hist(dist_frame_means_no_borders, main = "Mean distances wrt cards", xlab = "", ylab = "")
+# par(mfrow=c(2,2))
+# hist(dist_frame_means_no_borders[,1], main = "??")
+# hist(dist_frame_means_no_borders[,2], main = "??")
+# hist(dist_frame_means_no_borders[,3], main = "??")
+# hist(dist_frame_means_no_borders[,4], main = "??")
+abline(v = mean(dist_frame_means_no_borders), col = "red")
+dev.off()
+
+
+## DENSITY LINES
+
+# calculate min/max for x/y for a proper plot
+min_x = list()
+max_x = list()
+min_y = list()
+max_y = list()
+
+for(i in 1:13) {
+  min_x[i] <- min(density(dist_frame_means_no_borders[,i])$x)
+  max_x[i] <- max(density(dist_frame_means_no_borders[,i])$x)
+  min_y[i] <- min(density(dist_frame_means_no_borders[,i])$y)
+  max_y[i] <- max(density(dist_frame_means_no_borders[,i])$y)
+}
+
+plot(1, 1, type = "n", xlab = "Mean distances", ylab = "", 
+     xlim = c(min(unlist(min_x)),max(unlist(max_x))), 
+     ylim = c(min(unlist(min_y)), max(unlist(max_y))), main = "Mean distance density wrt cards by sheets")
+
+for (i in 1:13) {
+  lines(density(dist_frame_means_no_borders[,i]), col = color[i])
+}
+legend("topright", legend = 1:13, col=color, lty = 1, cex = 0.5) # optional legend
+dev.copy(png,filename="Images/Dist/DensityMeanDistCardsBySheets.png")
+dev.off()
+
+
+## VIOLIN PLOT
+
+png(filename="Images/Dist/ViolinMeanDistCardsBySheets.png")
+vioplot(dist_frame_means_no_borders[, 1],
+        dist_frame_means_no_borders[, 2],
+        dist_frame_means_no_borders[, 3],
+        dist_frame_means_no_borders[, 4],
+        dist_frame_means_no_borders[, 5],
+        dist_frame_means_no_borders[, 6],
+        dist_frame_means_no_borders[, 7],
+        dist_frame_means_no_borders[, 8],
+        dist_frame_means_no_borders[, 9],
+        dist_frame_means_no_borders[, 10],
+        dist_frame_means_no_borders[, 11],
+        dist_frame_means_no_borders[, 12],
+        dist_frame_means_no_borders[, 13],
+        horizontal = TRUE, col = color,
+        main = "Mean distances wrt cards by sheets", xlab = "Mean distances", ylab = "Sheet")
+abline(v = mean(dist_frame_means_no_borders), col = "red")
+dev.off()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# # cols: sheets, rows: mean distances 
+# dist_frame_means_all = data.frame()
+# for (i in 1:13) {
+#   dist_frame_means_all <- rbind(dist_frame_means_all, as.list(dist_means[which(dist_means[, "Sheet"] == i), 4]))
+# }
+# dist_frame_means_all <- t(dist_frame_means_all)
+# row.names(dist_frame_means_all) <- row_names
+# #write.csv(dist_frame_means_all, "Distance_frame_means_all.csv")
+
+
+
+
+# require(reshape2)
+# require(ggplot2)
+# 
+# #buc <- list("1" = dist_frame_means_all[, 1], "2" = dist_frame_means_all[, 2])
+# 
+# buc <- list()
+# for (i in 1:13) {
+#   buc[[i]] <- dist_frame_means_all[, i]
+# }
+# 
+# #ggplot(melt(buc), aes(value, fill = L1)) + geom_histogram(position = "stack") + scale_fill_manual(breaks = melt(buc)$L1, values = rainbow(13))
+# 
+# #ggplot(dist_frame_means_all, aes(x = ))
+# 
+# mel <- melt(buc)
+# tab <- table(mel$L1, mel$value)
+# 
+# png(filename="Images/StackBarMeanDistCardsBySheets.png")
+# barplot(tab, col = color)
+# abline(v = mean(dist_frame_means_all), col = "red")
+# dev.off()
+# 
+# # set some new bins
+# 
+# buc_cut <- list()
+# 
+# for (i in 1:13) {
+#   buc_cut[[i]] <- table(cut(dist_frame_means_all[,i], seq(min(dist_frame_means_all[]), max(dist_frame_means_all), 0.05)))
+# }
+# buc_cut
+# mel_cut <- melt(buc_cut);mel_cut
+# tab_cut <- table(mel_cut$L1, mel_cut$value); tab_cut
+# 
+# # stacked barplot for the new bins
+# # beside: a logical value. 
+# # If FALSE, the columns of height are portrayed as stacked bars, 
+# # and if TRUE the columns are portrayed as juxtaposed bars.
+# barplot(height = mel_cut$value, names.arg = mel_cut$Var1, col = color, beside = F)
+# ### does not work as exprected ###
+# 
+# # 1st: try the cut
+# cut(dist_frame_means_all, seq(min(dist_frame_means_all), max(dist_frame_means_all), 0.05))
+
+
+
+
+# ## boxplot distances no corners
+# dist_frame_means_no_corners = data.frame()
+# for (i in 1:13) {
+#   dist_frame_means_no_corners <- rbind(dist_frame_means_no_corners, as.list(dist_means[which(dist_means[, "Sheet"] == i), 5]))
+# }
+# dist_frame_means_no_corners <- t(dist_frame_means_no_corners)
+# row.names(dist_frame_means_no_corners) <- row_names
+# write.csv(dist_frame_means_no_corners, "Distance_frame_means_no_corners.csv")
+# 
+# boxplot(dist_frame_means_no_corners, horizontal = TRUE, main = "Mean distances wrt cards (no corners) by sheets", xlab = "Mean distances wrt cards", ylab = "Sheet")
+# abline(v = mean(dist_frame_means_no_corners))
+
+
 
 
 
