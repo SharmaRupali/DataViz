@@ -31,6 +31,21 @@ for (i in unique(c(paste(1, 1:8, sep=""), paste(8, 1:8, sep=""), paste(1:8, 1, s
 color <- rainbow(13)
 
 
+## 32 colors patches that we're working with
+mid_blocks_YY <- c(which(YY[, "Crow"] == 4 & YY[, "Ccol"] == 4), which(YY[, "Crow"] == 4 & YY[, "Ccol"] == 5), 
+  which(YY[, "Crow"] == 5 & YY[, "Ccol"] == 4), which(YY[, "Crow"] == 5 & YY[, "Ccol"] == 5))
+
+borders_YY <- which(YY[, "Crow"] == 1 | YY[, "Crow"] == 8 | YY[, "Ccol"] == 1 | YY[, "Ccol"] == 8)
+
+YY_noborders <- YY[-c(mid_blocks_YY, borders_YY), c("Crow", "Ccol", "L", "a", "b")]
+
+color_patches <- c()
+for (i in 1:32) {
+  color_patches[i] <- rgb(convertColor(YY_noborders[i, 3:5], from = "Lab", to = "sRGB"))
+}
+
+
+
 #####  DISTANCES
 
 ## distance (deltaE) between color patches
