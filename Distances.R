@@ -238,12 +238,104 @@ dev.off()
 
 ## DENSITY LINES
 
+png(filename="Images/Dist/DensityColorForCardsBySheet.png")
+
+plot.new()
+par(mfrow=c(2,2), mar=c(3.1, 4.1, 4.1, 2.1))
+
+# 23
+min_x = list()
+max_x = list()
+min_y = list()
+max_y = list()
+
+for(i in 1:13) {
+  min_x[i] <- min(density(dist_frame_color23[,i])$x)
+  max_x[i] <- max(density(dist_frame_color23[,i])$x)
+  min_y[i] <- min(density(dist_frame_color23[,i])$y)
+  max_y[i] <- max(density(dist_frame_color23[,i])$y)
+}
+
+plot(1, 1, type = "n", xlab = "", ylab = "", 
+     xlim = c(min(unlist(min_x)),max(unlist(max_x))), 
+     ylim = c(min(unlist(min_y)), max(unlist(max_y))), main = "")
+
+for (i in 1:13) {
+  lines(density(dist_frame_color23[,i]), col = color[i])
+}
+legend("topright", legend = 1:13, col=color, lty = 1, cex = 0.5, bg = color_patches[2]) # optional legend
 
 
+# 37
+min_x = list()
+max_x = list()
+min_y = list()
+max_y = list()
+
+for(i in 1:13) {
+  min_x[i] <- min(density(dist_frame_color37[,i])$x)
+  max_x[i] <- max(density(dist_frame_color37[,i])$x)
+  min_y[i] <- min(density(dist_frame_color37[,i])$y)
+  max_y[i] <- max(density(dist_frame_color37[,i])$y)
+}
+
+plot(1, 1, type = "n", xlab = "", ylab = "", 
+     xlim = c(min(unlist(min_x)),max(unlist(max_x))), 
+     ylim = c(min(unlist(min_y)), max(unlist(max_y))), main = "")
+
+for (i in 1:13) {
+  lines(density(dist_frame_color37[,i]), col = color[i])
+}
+legend("topright", legend = 1:13, col=color, lty = 1, cex = 0.5, bg = color_patches[12]) # optional legend
 
 
+# 65
+min_x = list()
+max_x = list()
+min_y = list()
+max_y = list()
+
+for(i in 1:13) {
+  min_x[i] <- min(density(dist_frame_color65[,i])$x)
+  max_x[i] <- max(density(dist_frame_color65[,i])$x)
+  min_y[i] <- min(density(dist_frame_color65[,i])$y)
+  max_y[i] <- max(density(dist_frame_color65[,i])$y)
+}
+
+plot(1, 1, type = "n", xlab = "", ylab = "", 
+     xlim = c(min(unlist(min_x)),max(unlist(max_x))), 
+     ylim = c(min(unlist(min_y)), max(unlist(max_y))), main = "")
+
+for (i in 1:13) {
+  lines(density(dist_frame_color65[,i]), col = color[i])
+}
+legend("topright", legend = 1:13, col=color, lty = 1, cex = 0.5, bg = color_patches[24]) # optional legend
 
 
+# 77
+min_x = list()
+max_x = list()
+min_y = list()
+max_y = list()
+
+for(i in 1:13) {
+  min_x[i] <- min(density(dist_frame_color77[,i])$x)
+  max_x[i] <- max(density(dist_frame_color77[,i])$x)
+  min_y[i] <- min(density(dist_frame_color77[,i])$y)
+  max_y[i] <- max(density(dist_frame_color77[,i])$y)
+}
+
+plot(1, 1, type = "n", xlab = "", ylab = "", 
+     xlim = c(min(unlist(min_x)),max(unlist(max_x))), 
+     ylim = c(min(unlist(min_y)), max(unlist(max_y))), main = "")
+
+for (i in 1:13) {
+  lines(density(dist_frame_color77[,i]), col = color[i])
+}
+legend("topright", legend = 1:13, col=color, lty = 1, cex = 0.5, bg = color_patches[32]) # optional legend
+
+mtext("Distance of individual colors by cards for sheets", side = 3, line = -2, font = 2, outer = TRUE)
+dev.off()
 
 
 
