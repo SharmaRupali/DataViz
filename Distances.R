@@ -14,11 +14,6 @@ dev.off()
 
 png(filename="Images/Dist/HistMeanDistCardsBySheets.png")
 hist(dist_frame_means_no_borders, main = "Mean distances wrt cards", xlab = "", ylab = "")
-# par(mfrow=c(2,2))
-# hist(dist_frame_means_no_borders[,1], main = "??")
-# hist(dist_frame_means_no_borders[,2], main = "??")
-# hist(dist_frame_means_no_borders[,3], main = "??")
-# hist(dist_frame_means_no_borders[,4], main = "??")
 abline(v = mean(dist_frame_means_no_borders), col = "red")
 dev.off()
 
@@ -78,14 +73,6 @@ dev.off()
 # comparing a single color for 1 sheet
 ## color from lab
 
-## 23
-dist_frame_color23 = data.frame()
-for (i in 1:13) {
-  dist_frame_color23 <- rbind(dist_frame_color23, as.list(dist_mat_no_borders[dist_mat_no_borders[, "Sheet"] == i, "23"]))
-}
-dist_frame_color23 <- t(dist_frame_color23)
-row.names(dist_frame_color23) <- row_names
-
 ## 37
 dist_frame_color37 = data.frame()
 for (i in 1:13) {
@@ -93,6 +80,14 @@ for (i in 1:13) {
 }
 dist_frame_color37 <- t(dist_frame_color37)
 row.names(dist_frame_color37) <- row_names
+
+## 57
+dist_frame_color57 = data.frame()
+for (i in 1:13) {
+  dist_frame_color57 <- rbind(dist_frame_color57, as.list(dist_mat_no_borders[dist_mat_no_borders[, "Sheet"] == i, "57"]))
+}
+dist_frame_color57 <- t(dist_frame_color57)
+row.names(dist_frame_color57) <- row_names
 
 ## 65
 dist_frame_color65 = data.frame()
@@ -111,11 +106,11 @@ dist_frame_color77 <- t(dist_frame_color77)
 row.names(dist_frame_color77) <- row_names
 
 # xlim for all charts 
-xlim <- c(min(dist_frame_color23, dist_frame_color37, dist_frame_color65, dist_frame_color77), 
-          max(dist_frame_color23, dist_frame_color37, dist_frame_color65, dist_frame_color77))
+xlim <- c(min(dist_frame_color37, dist_frame_color57, dist_frame_color65, dist_frame_color77), 
+          max(dist_frame_color37, dist_frame_color57, dist_frame_color65, dist_frame_color77))
 
 # obverall mean over the 4 selected colors 
-mean_overall <- mean(mean(dist_frame_color23), mean(dist_frame_color37), mean(dist_frame_color65), mean(dist_frame_color77))
+mean_overall <- mean(mean(dist_frame_color37), mean(dist_frame_color57), mean(dist_frame_color65), mean(dist_frame_color77))
 
 
 ## BOXPLOT
@@ -127,41 +122,39 @@ par(mfrow=c(2,2), oma=c(2.1, 2.1, 4.1, 2.1), mar=c(2,2,1,1))
 
 
 plot(1:13,1:13, type = "n", xlim = xlim)
-boxplot(dist_frame_color23, horizontal = TRUE, col = color_patches[2], add = TRUE) # , main = "23")
+boxplot(dist_frame_color37, horizontal = TRUE, col = color_patches[12], add = TRUE)
 abline(v = mean_overall, col = "red")
 
 plot(1:13,1:13, type = "n", xlim = xlim)
-boxplot(dist_frame_color37, horizontal = TRUE, col = color_patches[12], add = TRUE) # , main = "37")
+boxplot(dist_frame_color57, horizontal = TRUE, col = color_patches[20], add = TRUE)
 abline(v = mean_overall, col = "red")
 
 plot(1:13,1:13, type = "n", xlim = xlim)
-boxplot(dist_frame_color65, horizontal = TRUE, col = color_patches[24], add = TRUE) # , main = "65")
+boxplot(dist_frame_color65, horizontal = TRUE, col = color_patches[24], add = TRUE)
 abline(v = mean_overall, col = "red")
 
 plot(1:13,1:13, type = "n", xlim = xlim)
-boxplot(dist_frame_color77, horizontal = TRUE, col = color_patches[32], add = TRUE) # , main = "77")
+boxplot(dist_frame_color77, horizontal = TRUE, col = color_patches[32], add = TRUE)
 abline(v = mean_overall, col = "red")
 
 mtext("Distance of individual colors by cards for sheets", side = 3, line = 1, font = 2, outer = TRUE)
 dev.off()
 
-## par(mfrow=c(1,1), mar=c(5.1, 4.1, 4.1, 2.1), oma=c(0,0,0,0)) # default
-
 
 ## HISTOGRAM
 
-ylim <- c(1,200)
+ylim <- c(1,130)
 png(filename="Images/Dist/HistColorForCardsBySheet.png")
 
 plot.new()
 par(mfrow=c(2,2), oma=c(2.1, 2.1, 4.1, 2.1), mar=c(2,2,1,1))
 
 plot(1:13,1:13, type = "n", xlim = xlim, ylim = ylim)
-hist(dist_frame_color23, col = color_patches[2], main = "", xlab = "", ylab = "", add = TRUE) 
+hist(dist_frame_color37, col = color_patches[12], main = "", xlab = "", ylab = "", add = TRUE)
 abline(v = mean_overall, col = "red")
 
 plot(1:13,1:13, type = "n", xlim = xlim, ylim = ylim)
-hist(dist_frame_color37, col = color_patches[12], main = "", xlab = "", ylab = "", add = TRUE)
+hist(dist_frame_color57, col = color_patches[20], main = "", xlab = "", ylab = "", add = TRUE) 
 abline(v = mean_overall, col = "red")
 
 plot(1:13,1:13, type = "n", xlim = xlim, ylim = ylim)
@@ -184,24 +177,6 @@ plot.new()
 par(mfrow=c(2,2), oma=c(2.1, 2.1, 4.1, 2.1), mar=c(2,2,1,1))
 
 plot(1:13,1:13, type = "n", xlim = xlim)
-vioplot(dist_frame_color23[, 1],
-        dist_frame_color23[, 2],
-        dist_frame_color23[, 3],
-        dist_frame_color23[, 4],
-        dist_frame_color23[, 5],
-        dist_frame_color23[, 6],
-        dist_frame_color23[, 7],
-        dist_frame_color23[, 8],
-        dist_frame_color23[, 9],
-        dist_frame_color23[, 10],
-        dist_frame_color23[, 11],
-        dist_frame_color23[, 12],
-        dist_frame_color23[, 13],
-        horizontal = TRUE, col = color_patches[2],
-        main = "", xlab = "", ylab = "", add = TRUE)
-abline(v = mean_overall, col = "red")
-
-plot(1:13,1:13, type = "n", xlim = xlim)
 vioplot(dist_frame_color37[, 1],
         dist_frame_color37[, 2],
         dist_frame_color37[, 3],
@@ -216,6 +191,24 @@ vioplot(dist_frame_color37[, 1],
         dist_frame_color37[, 12],
         dist_frame_color37[, 13],
         horizontal = TRUE, col = color_patches[12],
+        main = "", xlab = "", ylab = "", add = TRUE)
+abline(v = mean_overall, col = "red")
+
+plot(1:13,1:13, type = "n", xlim = xlim)
+vioplot(dist_frame_color57[, 1],
+        dist_frame_color57[, 2],
+        dist_frame_color57[, 3],
+        dist_frame_color57[, 4],
+        dist_frame_color57[, 5],
+        dist_frame_color57[, 6],
+        dist_frame_color57[, 7],
+        dist_frame_color57[, 8],
+        dist_frame_color57[, 9],
+        dist_frame_color57[, 10],
+        dist_frame_color57[, 11],
+        dist_frame_color57[, 12],
+        dist_frame_color57[, 13],
+        horizontal = TRUE, col = color_patches[20],
         main = "", xlab = "", ylab = "", add = TRUE)
 abline(v = mean_overall, col = "red")
 
@@ -255,7 +248,6 @@ vioplot(dist_frame_color77[, 1],
         main = "", xlab = "", ylab = "", add = TRUE)
 abline(v = mean_overall, col = "red")
 
-
 mtext("Distance of individual colors by cards for sheets", side = 3, line = 1, font = 2, outer = TRUE)
 dev.off()
 
@@ -266,29 +258,6 @@ png(filename="Images/Dist/DensityColorForCardsBySheet.png")
 
 plot.new()
 par(mfrow=c(2,2), oma=c(2.1, 2.1, 4.1, 2.1), mar=c(2,2,1,1))
-
-# 23
-min_x = list()
-max_x = list()
-min_y = list()
-max_y = list()
-
-for(i in 1:13) {
-  min_x[i] <- min(density(dist_frame_color23[,i])$x)
-  max_x[i] <- max(density(dist_frame_color23[,i])$x)
-  min_y[i] <- min(density(dist_frame_color23[,i])$y)
-  max_y[i] <- max(density(dist_frame_color23[,i])$y)
-}
-
-plot(1, 1, type = "n", xlab = "", ylab = "", 
-     xlim = c(min(unlist(min_x)),max(unlist(max_x))), 
-     ylim = c(min(unlist(min_y)), max(unlist(max_y))), main = "")
-
-for (i in 1:13) {
-  lines(density(dist_frame_color23[,i]), col = color[i])
-}
-legend("topright", legend = 1:13, col=color, lty = 1, cex = 0.5, bg = color_patches[2]) # optional legend
-
 
 # 37
 min_x = list()
@@ -311,6 +280,29 @@ for (i in 1:13) {
   lines(density(dist_frame_color37[,i]), col = color[i])
 }
 legend("topright", legend = 1:13, col=color, lty = 1, cex = 0.5, bg = color_patches[12]) # optional legend
+
+
+# 57
+min_x = list()
+max_x = list()
+min_y = list()
+max_y = list()
+
+for(i in 1:13) {
+  min_x[i] <- min(density(dist_frame_color57[,i])$x)
+  max_x[i] <- max(density(dist_frame_color57[,i])$x)
+  min_y[i] <- min(density(dist_frame_color57[,i])$y)
+  max_y[i] <- max(density(dist_frame_color57[,i])$y)
+}
+
+plot(1, 1, type = "n", xlab = "", ylab = "", 
+     xlim = c(min(unlist(min_x)),max(unlist(max_x))), 
+     ylim = c(min(unlist(min_y)), max(unlist(max_y))), main = "")
+
+for (i in 1:13) {
+  lines(density(dist_frame_color57[,i]), col = color[i])
+}
+legend("topright", legend = 1:13, col=color, lty = 1, cex = 0.5, bg = color_patches[20]) # optional legend
 
 
 # 65
