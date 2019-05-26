@@ -27,7 +27,8 @@ col_dist_meas
 
 # color distance outliers
 for (i in 1:32){
-  print(paste(i,out_dist_col[i]))
+  print(paste('-', i, '-'))
+  print(length(boxplot.stats(dist_mat_no_borders[,i+3])$out))
 }
 
 
@@ -56,11 +57,13 @@ col_simi_meas <- cbind(min_simi_col, max_simi_col, mean_simi_col)
 rownames(col_simi_meas) <- c(1:32)
 colnames(col_simi_meas) <- c("Min", "Max", "Mean")
 col_simi_meas
+#write.csv(col_simi_meas, "Data/col_simi_meas.csv")
 
-write.csv(col_simi_meas, "Data/col_simi_meas.csv")
-
-# color distance outliers
+# color similarity outliers
 for (i in 1:32){
-  print(paste(i,out_dist_col[i]))
+  print(paste('-', i, '-'))
+  print(length(boxplot.stats(simi_mat_no_borders[,i+3])$out))
 }
 
+
+       
