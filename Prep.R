@@ -88,7 +88,7 @@ colnames(dist_means) <- c("Sheet", "Rows", "Columns", "Means_dist_all_colors", "
 dist_means[, 1:3] <- dist_mat[, 1:3]
 
 for (i in 1:dim(dist_mat)[1]) {
-  dist_means[i, 4] <- round(mean(dist_mat[i, 4:dim(dist_mat)[2]]), 2)
+  dist_means[i, 4] <- mean(dist_mat[i, 4:dim(dist_mat)[2]])
   dist_means[i, 5] <- mean(dist_mat_no_corners[i, 4:dim(dist_mat_no_corners)[2]])
   dist_means[i, 6] <- mean(dist_mat_no_borders[i, 4:dim(dist_mat_no_borders)[2]])
 }

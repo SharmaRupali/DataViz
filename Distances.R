@@ -1,3 +1,6 @@
+# defaults for plots
+par(mfrow=c(1,1), mar=c(5.1, 4.1, 4.1, 2.1), oma=c(0,0,0,0))
+
 ## BOXPLOT
 
 ## boxplot distances no borders
@@ -107,52 +110,69 @@ for (i in 1:13) {
 dist_frame_color77 <- t(dist_frame_color77)
 row.names(dist_frame_color77) <- row_names
 
+# xlim for all charts 
+xlim <- c(min(dist_frame_color23, dist_frame_color37, dist_frame_color65, dist_frame_color77), 
+          max(dist_frame_color23, dist_frame_color37, dist_frame_color65, dist_frame_color77))
+
+# obverall mean over the 4 selected colors 
+mean_overall <- mean(mean(dist_frame_color23), mean(dist_frame_color37), mean(dist_frame_color65), mean(dist_frame_color77))
+
 
 ## BOXPLOT
 
 png(filename="Images/Dist/BoxColorForCardsBySheet.png")
 
 plot.new()
-par(mfrow=c(2,2), mar=c(3.1, 4.1, 4.1, 2.1))
+par(mfrow=c(2,2), oma=c(2.1, 2.1, 4.1, 2.1), mar=c(2,2,1,1))
 
-boxplot(dist_frame_color23, horizontal = TRUE, col = color_patches[2]) # , main = "23")
-abline(v = mean(dist_frame_color23), col = "red")
 
-boxplot(dist_frame_color37, horizontal = TRUE, col = color_patches[12]) # , main = "37")
-abline(v = mean(dist_frame_color37), col = "red")
+plot(1:13,1:13, type = "n", xlim = xlim)
+boxplot(dist_frame_color23, horizontal = TRUE, col = color_patches[2], add = TRUE) # , main = "23")
+abline(v = mean_overall, col = "red")
 
-boxplot(dist_frame_color65, horizontal = TRUE, col = color_patches[24]) # , main = "65")
-abline(v = mean(dist_frame_color65), col = "red")
+plot(1:13,1:13, type = "n", xlim = xlim)
+boxplot(dist_frame_color37, horizontal = TRUE, col = color_patches[12], add = TRUE) # , main = "37")
+abline(v = mean_overall, col = "red")
 
-boxplot(dist_frame_color77, horizontal = TRUE, col = color_patches[32]) # , main = "77")
-abline(v = mean(dist_frame_color77), col = "red")
+plot(1:13,1:13, type = "n", xlim = xlim)
+boxplot(dist_frame_color65, horizontal = TRUE, col = color_patches[24], add = TRUE) # , main = "65")
+abline(v = mean_overall, col = "red")
 
-mtext("Distance of individual colors by cards for sheets", side = 3, line = -2, font = 2, outer = TRUE)
+plot(1:13,1:13, type = "n", xlim = xlim)
+boxplot(dist_frame_color77, horizontal = TRUE, col = color_patches[32], add = TRUE) # , main = "77")
+abline(v = mean_overall, col = "red")
+
+mtext("Distance of individual colors by cards for sheets", side = 3, line = 1, font = 2, outer = TRUE)
 dev.off()
 
-## par(mfrow=c(1,1), mar=c(5.1, 4.1, 4.1, 2.1)) # default
+## par(mfrow=c(1,1), mar=c(5.1, 4.1, 4.1, 2.1), oma=c(0,0,0,0)) # default
 
 
 ## HISTOGRAM
 
+ylim <- c(1,200)
 png(filename="Images/Dist/HistColorForCardsBySheet.png")
 
 plot.new()
-par(mfrow=c(2,2), mar=c(3.1, 4.1, 4.1, 2.1))
+par(mfrow=c(2,2), oma=c(2.1, 2.1, 4.1, 2.1), mar=c(2,2,1,1))
 
-hist(dist_frame_color23, col = color_patches[2], main = "", xlab = "", ylab = "") 
-abline(v = mean(dist_frame_color23), col = "red")
+plot(1:13,1:13, type = "n", xlim = xlim, ylim = ylim)
+hist(dist_frame_color23, col = color_patches[2], main = "", xlab = "", ylab = "", add = TRUE) 
+abline(v = mean_overall, col = "red")
 
-hist(dist_frame_color37, col = color_patches[12], main = "", xlab = "", ylab = "")
-abline(v = mean(dist_frame_color37), col = "red")
+plot(1:13,1:13, type = "n", xlim = xlim, ylim = ylim)
+hist(dist_frame_color37, col = color_patches[12], main = "", xlab = "", ylab = "", add = TRUE)
+abline(v = mean_overall, col = "red")
 
-hist(dist_frame_color65, col = color_patches[24], main = "", xlab = "", ylab = "")
-abline(v = mean(dist_frame_color65), col = "red")
+plot(1:13,1:13, type = "n", xlim = xlim, ylim = ylim)
+hist(dist_frame_color65, col = color_patches[24], main = "", xlab = "", ylab = "", add = TRUE)
+abline(v = mean_overall, col = "red")
 
-hist(dist_frame_color77, col = color_patches[32], main = "", xlab = "", ylab = "")
-abline(v = mean(dist_frame_color77), col = "red")
+plot(1:13,1:13, type = "n", xlim = xlim, ylim = ylim)
+hist(dist_frame_color77, col = color_patches[32], main = "", xlab = "", ylab = "", add = TRUE)
+abline(v = mean_overall, col = "red")
 
-mtext("Distance of individual colors by cards for sheets", side = 3, line = -2, font = 2, outer = TRUE)
+mtext("Distance of individual colors by cards for sheets", side = 3, line = 1, font = 2, outer = TRUE)
 dev.off()
 
 
@@ -161,8 +181,9 @@ dev.off()
 png(filename="Images/Dist/ViolinColorForCardsBySheet.png")
 
 plot.new()
-par(mfrow=c(2,2), mar=c(3.1, 4.1, 4.1, 2.1))
+par(mfrow=c(2,2), oma=c(2.1, 2.1, 4.1, 2.1), mar=c(2,2,1,1))
 
+plot(1:13,1:13, type = "n", xlim = xlim)
 vioplot(dist_frame_color23[, 1],
         dist_frame_color23[, 2],
         dist_frame_color23[, 3],
@@ -177,9 +198,10 @@ vioplot(dist_frame_color23[, 1],
         dist_frame_color23[, 12],
         dist_frame_color23[, 13],
         horizontal = TRUE, col = color_patches[2],
-        main = "", xlab = "", ylab = "")
-abline(v = mean(dist_frame_color22), col = "red")
+        main = "", xlab = "", ylab = "", add = TRUE)
+abline(v = mean_overall, col = "red")
 
+plot(1:13,1:13, type = "n", xlim = xlim)
 vioplot(dist_frame_color37[, 1],
         dist_frame_color37[, 2],
         dist_frame_color37[, 3],
@@ -194,9 +216,10 @@ vioplot(dist_frame_color37[, 1],
         dist_frame_color37[, 12],
         dist_frame_color37[, 13],
         horizontal = TRUE, col = color_patches[12],
-        main = "", xlab = "", ylab = "")
-abline(v = mean(dist_frame_color37), col = "red")
+        main = "", xlab = "", ylab = "", add = TRUE)
+abline(v = mean_overall, col = "red")
 
+plot(1:13,1:13, type = "n", xlim = xlim)
 vioplot(dist_frame_color65[, 1],
         dist_frame_color65[, 2],
         dist_frame_color65[, 3],
@@ -211,9 +234,10 @@ vioplot(dist_frame_color65[, 1],
         dist_frame_color65[, 12],
         dist_frame_color65[, 13],
         horizontal = TRUE, col = color_patches[24],
-        main = "", xlab = "", ylab = "")
-abline(v = mean(dist_frame_color65), col = "red")
+        main = "", xlab = "", ylab = "", add = TRUE)
+abline(v = mean_overall, col = "red")
 
+plot(1:13,1:13, type = "n", xlim = xlim)
 vioplot(dist_frame_color77[, 1],
         dist_frame_color77[, 2],
         dist_frame_color77[, 3],
@@ -228,11 +252,11 @@ vioplot(dist_frame_color77[, 1],
         dist_frame_color77[, 12],
         dist_frame_color77[, 13],
         horizontal = TRUE, col = color_patches[32],
-        main = "", xlab = "", ylab = "")
-abline(v = mean(dist_frame_color77), col = "red")
+        main = "", xlab = "", ylab = "", add = TRUE)
+abline(v = mean_overall, col = "red")
 
 
-mtext("Distance of individual colors by cards for sheets", side = 3, line = -2, font = 2, outer = TRUE)
+mtext("Distance of individual colors by cards for sheets", side = 3, line = 1, font = 2, outer = TRUE)
 dev.off()
 
 
@@ -241,7 +265,7 @@ dev.off()
 png(filename="Images/Dist/DensityColorForCardsBySheet.png")
 
 plot.new()
-par(mfrow=c(2,2), mar=c(3.1, 4.1, 4.1, 2.1))
+par(mfrow=c(2,2), oma=c(2.1, 2.1, 4.1, 2.1), mar=c(2,2,1,1))
 
 # 23
 min_x = list()
@@ -334,11 +358,12 @@ for (i in 1:13) {
 }
 legend("topright", legend = 1:13, col=color, lty = 1, cex = 0.5, bg = color_patches[32]) # optional legend
 
-mtext("Distance of individual colors by cards for sheets", side = 3, line = -2, font = 2, outer = TRUE)
+mtext("Distance of individual colors by cards for sheets", side = 3, line = 1, font = 2, outer = TRUE)
 dev.off()
 
 
-
+# defaults for plots
+par(mfrow=c(1,1), mar=c(5.1, 4.1, 4.1, 2.1), oma=c(0,0,0,0))
 
 
 
