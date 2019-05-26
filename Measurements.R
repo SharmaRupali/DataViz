@@ -56,7 +56,7 @@ for(i in 1:13) {
   min_dist_sheet <- c(min_dist_sheet, round(min(dist_frame_means_no_borders[,i]), 3))
   max_dist_sheet <- c(max_dist_sheet, round(max(dist_frame_means_no_borders[,i]), 3))
   mean_dist_sheet <- c(mean_dist_sheet, round(mean(dist_frame_means_no_borders[,i]), 3))
-  median_dist_sheet <- c(median_dist_sheet, median(dist_frame_means_no_borders[,i]))
+  median_dist_sheet <- c(median_dist_sheet, round(median(dist_frame_means_no_borders[,i]), 5))
   out_dist_sheet[[i]] <- round(boxplot.stats(dist_frame_means_no_borders[,i])$out, 3)
 }
 
@@ -64,7 +64,7 @@ sheet_dist_means <- cbind(min_dist_sheet, max_dist_sheet, mean_dist_sheet, media
 rownames(sheet_dist_means) <- c(1:13)
 colnames(sheet_dist_means) <- c("Min", "Max", "Mean", "Median", "No. Outliers")
 sheet_dist_means
-# write.csv(sheet_dist_means, "sheet_dist_means.csv")
+write.csv(sheet_dist_means, "sheet_dist_means.csv")
 
 # sheet distance outliers
 for (i in 1:13){
@@ -143,7 +143,7 @@ for(i in 1:13) {
   min_simi_sheet <- c(min_simi_sheet, round(min(simi_frame_means_no_borders[,i]), 3))
   max_simi_sheet <- c(max_simi_sheet, round(max(simi_frame_means_no_borders[,i]), 3))
   mean_simi_sheet <- c(mean_simi_sheet, round(mean(simi_frame_means_no_borders[,i]), 3))
-  median_simi_sheet <- c(median_simi_sheet, median(simi_frame_means_no_borders[,i]))
+  median_simi_sheet <- c(median_simi_sheet, round(median(simi_frame_means_no_borders[,i]), 5))
   out_simi_sheet[[i]] <- round(boxplot.stats(simi_frame_means_no_borders[,i])$out, 3)
 }
 
@@ -151,7 +151,7 @@ sheet_simi_means <- cbind(min_simi_sheet, max_simi_sheet, mean_simi_sheet, media
 rownames(sheet_simi_means) <- c(1:13)
 colnames(sheet_simi_means) <- c("Min", "Max", "Mean", "Median", "No. Outliers")
 sheet_simi_means
-# write.csv(sheet_simi_means, "sheet_simi_means.csv")
+write.csv(sheet_simi_means, "sheet_simi_means.csv")
 
 # sheet distance outliers
 for (i in 1:13){
