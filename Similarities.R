@@ -99,24 +99,44 @@ for(i in 1:13) {
   min_y[i] <- min(col_sim[[i]])
   max_y[i] <- max(col_sim[[i]])
 }
-
-plot(1, 1, type = "b", xlab = "", ylab = "", log = "x", pch = 19,
-     xlim = c(min(unlist(min_x)),max(unlist(max_x))),
-     ylim = c(min(unlist(min_y)), max(unlist(max_y))), main = "???")
-
-col_col <- rainbow(32)
-
+# var 1
+plot(1, 1, type = "b", xlab = "Distance", ylab = "Similarity", log = "x", pch = 19,
+     xlim = c(min(unlist(min_x)),max(unlist(max_x))+60),
+     ylim = c(min(unlist(min_y)), max(unlist(max_y))), main = "Distance vs Similarity for each Color")
 
 for (i in 1:13) {
   for(j in 1:32) {
-    lines(col_dist[[i]][j], col_sim[[i]][j], col = col_col[j], type = "b", cex=1.5)
+    points(col_dist[[i]][j], col_sim[[i]][j], cex=1.5,pch = my_pch[j], col = adjustcolor(color_patches[j], alpha.f = 0.7))#,bg = color_patches[j])#type = "b", cex=1.5)
   }
+  
 }
 
+legend(x = max(unlist(max_x)) + 5, y=max(unlist(max_y)), legend = 1:16, col=color_patches[1:16], pch = my_pch[1:16]) 
+legend(x = max(unlist(max_x)) + 30, y=max(unlist(max_y)), legend = 17:32, col=color_patches[17:32], pch = my_pch[17:32]) # optional legend
 
-legend("topright", legend = 1:13, col=color, pch=1) # optional legend
-dev.copy(png,filename="Images/ScatterDistColors.png");
+dev.copy(png,filename="Images/ScatterDistColors1.png");
 dev.off()
+
+# var 2
+plot(1, 1, type = "b", xlab = "Distance", ylab = "Similarity", log = "x", pch = 19,
+     xlim = c(min(unlist(min_x)),max(unlist(max_x))+150),
+     ylim = c(min(unlist(min_y)), max(unlist(max_y))), main = "Distance vs Similarity for each Color")
+
+for (i in 1:13) {
+  for(j in 1:32) {
+    points(col_dist[[i]][j], col_sim[[i]][j], cex=1.5,pch = 23, col = color[i],bg = color_patches[j])#type = "b", cex=1.5)
+  }
+  
+}
+
+legend(x = max(unlist(max_x)) + 5, y=max(unlist(max_y)), legend = 1:13, col=color, pch = 23) 
+legend(x = max(unlist(max_x)) + 30, y=max(unlist(max_y)), legend = 1:16, col=color_patches[1:16], pch = 23) 
+legend(x = max(unlist(max_x)) + 80, y=max(unlist(max_y)), legend = 17:32, col=color_patches[17:32], pch = 23) # optional legend
+
+
+dev.copy(png,filename="Images/ScatterDistColors2.png");
+dev.off()
+
 
 
 
