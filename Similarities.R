@@ -1,3 +1,6 @@
+# defaults for plots
+par(mfrow=c(1,1), mar=c(5.1, 4.1, 4.1, 2.1), oma=c(0,0,0,0))
+
 ## BOXPLOT
 
 ## boxplot similarities no borders
@@ -62,6 +65,306 @@ vioplot(simi_frame_means_no_borders[, 1],
         main = "Mean similarities wrt cards by sheets", xlab = "Mean similarities", ylab = "Sheet")
 abline(v = mean(simi_frame_means_no_borders), col = "red")
 dev.off()
+
+
+
+### HYPOTHESIS B
+
+# comparing a single color for 1 sheet
+## color from lab
+
+## 37
+simi_frame_color37 = data.frame()
+for (i in 1:13) {
+  simi_frame_color37 <- rbind(simi_frame_color37, as.list(simi_mat_no_borders[simi_mat_no_borders[, "Sheet"] == i, "37"]))
+}
+simi_frame_color37 <- t(simi_frame_color37)
+row.names(simi_frame_color37) <- row_names
+
+## 57
+simi_frame_color57 = data.frame()
+for (i in 1:13) {
+  simi_frame_color57 <- rbind(simi_frame_color57, as.list(simi_mat_no_borders[simi_mat_no_borders[, "Sheet"] == i, "57"]))
+}
+simi_frame_color57 <- t(simi_frame_color57)
+row.names(simi_frame_color57) <- row_names
+
+## 65
+simi_frame_color65 = data.frame()
+for (i in 1:13) {
+  simi_frame_color65 <- rbind(simi_frame_color65, as.list(simi_mat_no_borders[simi_mat_no_borders[, "Sheet"] == i, "65"]))
+}
+simi_frame_color65 <- t(simi_frame_color65)
+row.names(simi_frame_color65) <- row_names
+
+## 77
+simi_frame_color77 = data.frame()
+for (i in 1:13) {
+  simi_frame_color77 <- rbind(simi_frame_color77, as.list(simi_mat_no_borders[simi_mat_no_borders[, "Sheet"] == i, "77"]))
+}
+simi_frame_color77 <- t(simi_frame_color77)
+row.names(simi_frame_color77) <- row_names
+
+# xlim for all charts 
+xlim <- c(min(simi_frame_color37, simi_frame_color57, simi_frame_color65, simi_frame_color77), 
+          max(simi_frame_color37, simi_frame_color57, simi_frame_color65, simi_frame_color77))
+
+# obverall mean over the 4 selected colors 
+mean_overall <- mean(mean(simi_frame_color37), mean(simi_frame_color57), mean(simi_frame_color65), mean(simi_frame_color77))
+
+
+## BOXPLOT
+
+png(filename="Images/Simi/BoxColorForCardsBySheet.png")
+
+plot.new()
+par(mfrow=c(2,2), oma=c(2.1, 2.1, 4.1, 2.1), mar=c(2,2,1,1))
+
+
+plot(1:13,1:13, type = "n", xlim = xlim)
+boxplot(simi_frame_color37, horizontal = TRUE, col = color_patches[12], add = TRUE)
+abline(v = mean_overall, col = "red")
+
+plot(1:13,1:13, type = "n", xlim = xlim)
+boxplot(simi_frame_color57, horizontal = TRUE, col = color_patches[20], add = TRUE)
+abline(v = mean_overall, col = "red")
+
+plot(1:13,1:13, type = "n", xlim = xlim)
+boxplot(simi_frame_color65, horizontal = TRUE, col = color_patches[24], add = TRUE)
+abline(v = mean_overall, col = "red")
+
+plot(1:13,1:13, type = "n", xlim = xlim)
+boxplot(simi_frame_color77, horizontal = TRUE, col = color_patches[32], add = TRUE)
+abline(v = mean_overall, col = "red")
+
+mtext("Similarity of individual colors by cards for sheets", side = 3, line = 1, font = 2, outer = TRUE)
+dev.off()
+
+
+## HISTOGRAM
+
+ylim <- c(1,180)
+png(filename="Images/Simi/HistColorForCardsBySheet.png")
+
+plot.new()
+par(mfrow=c(2,2), oma=c(2.1, 2.1, 4.1, 2.1), mar=c(2,2,1,1))
+
+plot(1:13,1:13, type = "n", xlim = xlim, ylim = ylim)
+hist(simi_frame_color37, col = color_patches[12], main = "", xlab = "", ylab = "", add = TRUE)
+abline(v = mean_overall, col = "red")
+
+plot(1:13,1:13, type = "n", xlim = xlim, ylim = ylim)
+hist(simi_frame_color57, col = color_patches[20], main = "", xlab = "", ylab = "", add = TRUE) 
+abline(v = mean_overall, col = "red")
+
+plot(1:13,1:13, type = "n", xlim = xlim, ylim = ylim)
+hist(simi_frame_color65, col = color_patches[24], main = "", xlab = "", ylab = "", add = TRUE)
+abline(v = mean_overall, col = "red")
+
+plot(1:13,1:13, type = "n", xlim = xlim, ylim = ylim)
+hist(simi_frame_color77, col = color_patches[32], main = "", xlab = "", ylab = "", add = TRUE)
+abline(v = mean_overall, col = "red")
+
+mtext("Similarity of individual colors by cards for sheets", side = 3, line = 1, font = 2, outer = TRUE)
+dev.off()
+
+
+## VIOLIN PLOTS
+
+png(filename="Images/Simi/ViolinColorForCardsBySheet.png")
+
+plot.new()
+par(mfrow=c(2,2), oma=c(2.1, 2.1, 4.1, 2.1), mar=c(2,2,1,1))
+
+plot(1:13,1:13, type = "n", xlim = xlim)
+vioplot(simi_frame_color37[, 1],
+        simi_frame_color37[, 2],
+        simi_frame_color37[, 3],
+        simi_frame_color37[, 4],
+        simi_frame_color37[, 5],
+        simi_frame_color37[, 6],
+        simi_frame_color37[, 7],
+        simi_frame_color37[, 8],
+        simi_frame_color37[, 9],
+        simi_frame_color37[, 10],
+        simi_frame_color37[, 11],
+        simi_frame_color37[, 12],
+        simi_frame_color37[, 13],
+        horizontal = TRUE, col = color_patches[12],
+        main = "", xlab = "", ylab = "", add = TRUE)
+abline(v = mean_overall, col = "red")
+
+plot(1:13,1:13, type = "n", xlim = xlim)
+vioplot(simi_frame_color57[, 1],
+        simi_frame_color57[, 2],
+        simi_frame_color57[, 3],
+        simi_frame_color57[, 4],
+        simi_frame_color57[, 5],
+        simi_frame_color57[, 6],
+        simi_frame_color57[, 7],
+        simi_frame_color57[, 8],
+        simi_frame_color57[, 9],
+        simi_frame_color57[, 10],
+        simi_frame_color57[, 11],
+        simi_frame_color57[, 12],
+        simi_frame_color57[, 13],
+        horizontal = TRUE, col = color_patches[20],
+        main = "", xlab = "", ylab = "", add = TRUE)
+abline(v = mean_overall, col = "red")
+
+plot(1:13,1:13, type = "n", xlim = xlim)
+vioplot(simi_frame_color65[, 1],
+        simi_frame_color65[, 2],
+        simi_frame_color65[, 3],
+        simi_frame_color65[, 4],
+        simi_frame_color65[, 5],
+        simi_frame_color65[, 6],
+        simi_frame_color65[, 7],
+        simi_frame_color65[, 8],
+        simi_frame_color65[, 9],
+        simi_frame_color65[, 10],
+        simi_frame_color65[, 11],
+        simi_frame_color65[, 12],
+        simi_frame_color65[, 13],
+        horizontal = TRUE, col = color_patches[24],
+        main = "", xlab = "", ylab = "", add = TRUE)
+abline(v = mean_overall, col = "red")
+
+plot(1:13,1:13, type = "n", xlim = xlim)
+vioplot(simi_frame_color77[, 1],
+        simi_frame_color77[, 2],
+        simi_frame_color77[, 3],
+        simi_frame_color77[, 4],
+        simi_frame_color77[, 5],
+        simi_frame_color77[, 6],
+        simi_frame_color77[, 7],
+        simi_frame_color77[, 8],
+        simi_frame_color77[, 9],
+        simi_frame_color77[, 10],
+        simi_frame_color77[, 11],
+        simi_frame_color77[, 12],
+        simi_frame_color77[, 13],
+        horizontal = TRUE, col = color_patches[32],
+        main = "", xlab = "", ylab = "", add = TRUE)
+abline(v = mean_overall, col = "red")
+
+mtext("Similarity of individual colors by cards for sheets", side = 3, line = 1, font = 2, outer = TRUE)
+dev.off()
+
+
+## DENSITY LINES
+
+png(filename="Images/Simi/DensityColorForCardsBySheet.png")
+
+plot.new()
+par(mfrow=c(2,2), oma=c(2.1, 2.1, 4.1, 2.1), mar=c(2,2,1,1))
+
+# 37
+min_x = list()
+max_x = list()
+min_y = list()
+max_y = list()
+
+for(i in 1:13) {
+  min_x[i] <- min(density(simi_frame_color37[,i])$x)
+  max_x[i] <- max(density(simi_frame_color37[,i])$x)
+  min_y[i] <- min(density(simi_frame_color37[,i])$y)
+  max_y[i] <- max(density(simi_frame_color37[,i])$y)
+}
+
+plot(1, 1, type = "n", xlab = "", ylab = "", 
+     xlim = c(min(unlist(min_x)),max(unlist(max_x))), 
+     ylim = c(min(unlist(min_y)), max(unlist(max_y))), main = "")
+
+for (i in 1:13) {
+  lines(density(simi_frame_color37[,i]), col = color[i])
+}
+legend("topright", legend = 1:13, col=color, lty = 1, cex = 0.5, bg = color_patches[12]) # optional legend
+
+
+# 57
+min_x = list()
+max_x = list()
+min_y = list()
+max_y = list()
+
+for(i in 1:13) {
+  min_x[i] <- min(density(simi_frame_color57[,i])$x)
+  max_x[i] <- max(density(simi_frame_color57[,i])$x)
+  min_y[i] <- min(density(simi_frame_color57[,i])$y)
+  max_y[i] <- max(density(simi_frame_color57[,i])$y)
+}
+
+plot(1, 1, type = "n", xlab = "", ylab = "", 
+     xlim = c(min(unlist(min_x)),max(unlist(max_x))), 
+     ylim = c(min(unlist(min_y)), max(unlist(max_y))), main = "")
+
+for (i in 1:13) {
+  lines(density(simi_frame_color57[,i]), col = color[i])
+}
+legend("topright", legend = 1:13, col=color, lty = 1, cex = 0.5, bg = color_patches[20]) # optional legend
+
+
+# 65
+min_x = list()
+max_x = list()
+min_y = list()
+max_y = list()
+
+for(i in 1:13) {
+  min_x[i] <- min(density(simi_frame_color65[,i])$x)
+  max_x[i] <- max(density(simi_frame_color65[,i])$x)
+  min_y[i] <- min(density(simi_frame_color65[,i])$y)
+  max_y[i] <- max(density(simi_frame_color65[,i])$y)
+}
+
+plot(1, 1, type = "n", xlab = "", ylab = "", 
+     xlim = c(min(unlist(min_x)),max(unlist(max_x))), 
+     ylim = c(min(unlist(min_y)), max(unlist(max_y))), main = "")
+
+for (i in 1:13) {
+  lines(density(simi_frame_color65[,i]), col = color[i])
+}
+legend("topright", legend = 1:13, col=color, lty = 1, cex = 0.5, bg = color_patches[24]) # optional legend
+
+
+# 77
+min_x = list()
+max_x = list()
+min_y = list()
+max_y = list()
+
+for(i in 1:13) {
+  min_x[i] <- min(density(simi_frame_color77[,i])$x)
+  max_x[i] <- max(density(simi_frame_color77[,i])$x)
+  min_y[i] <- min(density(simi_frame_color77[,i])$y)
+  max_y[i] <- max(density(simi_frame_color77[,i])$y)
+}
+
+plot(1, 1, type = "n", xlab = "", ylab = "", 
+     xlim = c(min(unlist(min_x)),max(unlist(max_x))), 
+     ylim = c(min(unlist(min_y)), max(unlist(max_y))), main = "")
+
+for (i in 1:13) {
+  lines(density(simi_frame_color77[,i]), col = color[i])
+}
+legend("topright", legend = 1:13, col=color, lty = 1, cex = 0.5, bg = color_patches[32]) # optional legend
+
+mtext("Similarity of individual colors by cards for sheets", side = 3, line = 1, font = 2, outer = TRUE)
+dev.off()
+
+
+# defaults for plots
+par(mfrow=c(1,1), mar=c(5.1, 4.1, 4.1, 2.1), oma=c(0,0,0,0))
+
+
+
+
+
+
+
+
+
 
 
 ### HYPOTHESIS C - Comparing a single color over all sheets
