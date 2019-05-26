@@ -10,13 +10,19 @@ outlier_dist_frame_means_no_borders <- round(boxplot.stats(dist_frame_means_no_b
 min_dist_col <- c()
 max_dist_col<- c()
 mean_dist_col<- c()
+med_dist_col<- c()
 out_dist_col <- list()
 
 for(i in 4:35) {
   min_dist_col <- c(min_dist_col,round(min(dist_mat_no_borders[,i]),3))
   max_dist_col <- c(max_dist_col,round(max(dist_mat_no_borders[,i]),3))
   mean_dist_col <- c(mean_dist_col,round(mean(dist_mat_no_borders[,i]),3))
+  med_dist_col <- c(med_dist_col,median(dist_mat_no_borders[,i]))
   out_dist_col[[i-3]] <- round(boxplot.stats(dist_mat_no_borders[,i])$out,3)
+}
+
+for(i in 1:32) {
+  print(med_dist_col[i])
 }
 
 col_dist_meas <- cbind(min_dist_col, max_dist_col, mean_dist_col)
@@ -44,19 +50,28 @@ outlier_simi_frame_means_no_borders <- round(boxplot.stats(simi_frame_means_no_b
 min_simi_col <- c()
 max_simi_col<- c()
 mean_simi_col<- c()
+med_simi_col<- c()
 out_simi_col <- list()
 
 for(i in 4:35) {
   min_simi_col <- c(min_simi_col,round(min(simi_mat_no_borders[,i]),3))
   max_simi_col <- c(max_simi_col,round(max(simi_mat_no_borders[,i]),3))
   mean_simi_col <- c(mean_simi_col,round(mean(simi_mat_no_borders[,i]),3))
+  med_simi_col <- c(med_simi_col,median(simi_mat_no_borders[,i]))
   out_simi_col[[i-3]] <- round(boxplot.stats(simi_mat_no_borders[,i])$out,3)
 }
 
+for(i in 1:32) {
+  print(med_simi_col[i])
+}
+
+med_simi_col
 col_simi_meas <- cbind(min_simi_col, max_simi_col, mean_simi_col)
 rownames(col_simi_meas) <- c(1:32)
-colnames(col_simi_meas) <- c("Min", "Max", "Mean")
+colnames(col_simi_meas) <- c("Min", "Max", "Mean", "Median")
 col_simi_meas
+length(mean_simi_col)
+round(median(simi_mat_no_borders[,5]),3)
 #write.csv(col_simi_meas, "Data/col_simi_meas.csv")
 
 # color similarity outliers
@@ -65,5 +80,10 @@ for (i in 1:32){
   print(length(boxplot.stats(simi_mat_no_borders[,i+3])$out))
 }
 
+max_simi_col <- c(max_simi_col,round(max(simi_mat_no_borders[,i]),3))
 
-       
+round(max(simi_mat_no_borders[,4:35]),3)
+round(min(simi_mat_no_borders[,4:35]), 3)  
+round(mean(simi_mat_no_borders[,4:35]),3)
+round(boxplot.stats(simi_mat_no_borders[,4:35])$out,3)
+boxplot.stats(simi_mat_no_borders[,4:35])$out
