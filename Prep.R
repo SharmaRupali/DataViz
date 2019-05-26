@@ -1,6 +1,7 @@
 require(data.table)
 require(colorscience)
 require(tcR)
+require(vioplot)
 
 lab_measure <- fread("Data/LabMeasurements-Color-Card.csv", dec = ",")
 master_color_card <- fread("Data/MasterColorCard.csv", dec = ",")
